@@ -6,6 +6,7 @@ from AudioSpeaker import speak as voice
 lokasi = []
 judul = []
 path = "songs"
+accepted_formats = [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"]
 center = 50
 
 class Song:
@@ -27,8 +28,10 @@ class Playlist:
             os.makedirs(path)
         # Membaca lagu dari folder
         for song in os.listdir(path):
-            lokasi.append(f"{path}/{song}")
-            judul.append(os.path.splitext(song)[0])
+            _, file_extension = os.path.splitext(song)
+            if file_extension.lower() in accepted_formats:
+                lokasi.append(f"{path}/{song}")
+                judul.append(os.path.splitext(song)[0])
 
     def __init__(self, enableSpeak=True):
         # Inisialisasi atribut
