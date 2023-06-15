@@ -22,19 +22,9 @@ class Song:
         return f"{self.title}", f"{self.path}"
 
 class Playlist:
-    def loadLocalSong(self):
-        if not os.path.exists(path):
-            # Jika folder tidak ada, buat folder
-            os.makedirs(path)
-        # Membaca lagu dari folder
-        for song in os.listdir(path):
-            _, file_extension = os.path.splitext(song)
-            if file_extension.lower() in accepted_formats:
-                lokasi.append(f"{path}/{song}")
-                judul.append(os.path.splitext(song)[0])
-
     def __init__(self, enableSpeak=True):
         # Inisialisasi atribut
+        self.path = path
         self.loadLocalSong()
         self.head = None
         self.tail = None
@@ -44,6 +34,28 @@ class Playlist:
             self.speak = voice
         else:
             self.speak = lambda text: None
+
+    def loadLocalSong(self):
+        judul.clear()
+        lokasi.clear()
+        if not os.path.exists(self.path):
+            # Jika folder tidak ada, buat folder
+            os.makedirs(self.path)
+        # Membaca lagu dari folder
+        for song in os.listdir(self.path):
+            _, file_extension = os.path.splitext(song)
+            if file_extension.lower() in accepted_formats:
+                lokasi.append(f"{self.path}/{song}")
+                judul.append(os.path.splitext(song)[0])
+    
+    def updatePath(self, new_path=""):
+        if new_path:
+            if not os.path.exists(new_path):
+                print("Direktori tidak ditemukan! Buat direktori baru atau masukkan direktori yang benar.")
+                time.sleep(2)
+                return
+            self.path = new_path
+        self.loadLocalSong()
 
     def add_song(self, title, path):
         # Menambahkan lagu ke daftar putar
@@ -228,18 +240,19 @@ while True:
     App.namaProgram()
     Playlist.monitor_player_status()
     print("\nMenu:")
-    print("[1] Tambah daftar putar")
-    print("[2] Putar lagu saat ini")
-    print("[3] Putar lagu berikutnya")
-    print("[4] Putar lagu sebelumnya")
-    print("[5] Berhenti memutar lagu")
-    print("[6] Hapus dari daftar putar")
-    print("[7] Cari dalam daftar putar")
+    print("[ 1] Tambah daftar putar")
+    print("[ 2] Putar lagu saat ini")
+    print("[ 3] Putar lagu berikutnya")
+    print("[ 4] Putar lagu sebelumnya")
+    print("[ 5] Berhenti memutar lagu")
+    print("[ 6] Hapus dari daftar putar")
+    print("[ 7] Cari dalam daftar putar")
     if Playlist.speak == voice:
-        print("[8] Matikan fungsi suara")
+        print("[ 8] Matikan fungsi suara")
     else:
-        print("[8] Nyalakan fungsi suara")
-    print("[9] Keluar")
+        print("[ 8] Nyalakan fungsi suara")
+    print("[ 9] Ganti direktori lagu")
+    print("[10] Keluar")
     print("----------------------------")
     pilihan = input("Masukkan pilihan Anda: ")
 
@@ -291,9 +304,12 @@ while True:
             Playlist.speak = voice
             print()
             Playlist.speak("Menyalakan suara")
-    elif pilihan == "9":
+    elif pilihan == "10":
         Playlist.stopping()
         break
+    elif pilihan == "9":
+        path = input("Masukkan path direktori lagu: ")
+        Playlist.updatePath(path)
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
         time.sleep(2)
