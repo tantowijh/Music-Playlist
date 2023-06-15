@@ -197,8 +197,13 @@ class Application:
     def load_playlist(self):
         # Menampilkan daftar lagu
         self.subtitle("Daftar Lagu Tersedia")
-        for no, lagu in enumerate(judul, start=1):
-            print(f"[{no:2}] {lagu}")
+        if judul:
+            for index, lagu in enumerate(judul, start=1):
+                print(f"[{index:2}] {lagu}")
+        else:
+            print("Tidak ada lagu yang tersedia!")
+            time.sleep(2)
+            return
         print("----------------------------------------------------------")
         try:
             tambah = int(input("Pilih lagu yang ingin ditambahkan ke daftar putar: "))
