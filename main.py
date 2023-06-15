@@ -289,6 +289,7 @@ while True:
             print()
             Playlist.speak("Menyalakan suara")
     elif pilihan == "9":
+        Playlist.stopping()
         break
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
