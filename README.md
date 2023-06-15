@@ -33,7 +33,7 @@ Proyek ini mengimplementasikan sebuah playlist musik menggunakan struktur data d
 
 ## Cara Menjalankan
 
-1. Clone atau unduh repository ini ke mesin lokal Anda.
+1. Clone atau unduh repository ini ke directory lokal Anda.
 
 2. Install library yang dibutuhkan dengan menjalankan perintah berikut:
 
