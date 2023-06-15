@@ -1,5 +1,5 @@
 __pycache__/
 env/
-songs/*
+# songs
 output.mp3
 .DS_Store
