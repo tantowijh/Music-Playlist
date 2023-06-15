@@ -92,6 +92,13 @@ class Playlist:
         if song.next_song is not None:
             # Jika lagu yang dihapus bukan lagu terakhir
             song.next_song.prev_song = song.prev_song
+        if song is self.current_song:
+            # Jika lagu yang dihapus adalah lagu yang sedang diputar
+            self.stopping()
+            if song.next_song is not None:
+                song.next_song.prev_song = song.prev_song
+            self.current_song = song.next_song
+
         self.speak(f"{song.title}")
         self.speak(f"berhasil dihapus dari daftar putar")
 
@@ -224,9 +231,11 @@ class Application:
             tambah = int(input("Pilih lagu yang ingin ditambahkan ke daftar putar: "))
         except ValueError:
             print("Input harus berupa angka!")
+            time.sleep(2)
             return
         if tambah not in range(1, len(judul)+1):
             print("Lagu tidak ditemukan dalam daftar lagu")
+            time.sleep(2)
             return
         Playlist.add_song(judul[int(tambah)-1], lokasi[int(tambah)-1])
 
@@ -277,6 +286,7 @@ while True:
     elif pilihan == "6":
         if Playlist.isEmpty():
             continue
+        print()
         judul_lagu = input("Masukkan judul lagu yang akan dihapus: ")
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
@@ -288,6 +298,7 @@ while True:
     elif pilihan == "7":
         if Playlist.isEmpty():
             continue
+        print()
         judul_lagu = input("Masukkan judul lagu yang akan dicari: ")
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
