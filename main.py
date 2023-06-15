@@ -22,6 +22,9 @@ class Song:
 
 class Playlist:
     def loadLocalSong(self):
+        if not os.path.exists(path):
+            # Jika folder tidak ada, buat folder
+            os.makedirs(path)
         # Membaca lagu dari folder
         for song in os.listdir(path):
             lokasi.append(f"{path}/{song}")
