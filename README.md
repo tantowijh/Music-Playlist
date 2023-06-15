@@ -1,50 +1,49 @@
 # Music Playlist Double Linked List
 
-This project implements a music playlist using a doubly linked list data structure in Python. The playlist allows you to manage and play music from a local folder called 'songs'.
+Proyek ini mengimplementasikan sebuah playlist musik menggunakan struktur data doubly linked list dalam bahasa Python. Playlist ini memungkinkan Anda mengelola dan memutar musik dari folder lokal yang bernama 'songs'.
 
-## Features
+## Fitur
 
-1. **Load Music from Local Folder**: The program loads music files from the 'songs' folder in the local directory and creates a playlist with the songs.
+1. **Muat Musik dari Folder Lokal**: Program ini memuat file musik dari folder 'songs' pada direktori lokal dan membuat sebuah playlist dengan lagu-lagu tersebut.
 
-2. **Add Song to Playlist**: Menu option 1 allows you to add a song from the 'songs' folder to the playlist. Simply select the song you want to add, and it will be appended to the playlist.
+2. **Tambahkan Lagu ke Playlist**: Opsi menu 1 memungkinkan Anda menambahkan lagu dari folder 'songs' ke dalam playlist. Cukup pilih lagu yang ingin ditambahkan, dan lagu tersebut akan ditambahkan ke playlist.
 
-3. **Play Current Song**: Menu option 2 plays the currently selected song in the playlist. The program will play the audio of the song using the default media player.
+3. **Putar Lagu Saat Ini**: Opsi menu 2 memutar lagu yang saat ini dipilih dalam playlist. Program akan memutar audio dari lagu tersebut menggunakan pemutar media default.
 
-4. **Play Next Song**: Menu option 3 plays the next song in the playlist. If the current song is the last in the playlist, it will loop back to the first song.
+4. **Putar Lagu Berikutnya**: Opsi menu 3 memutar lagu berikutnya dalam playlist. Jika lagu saat ini adalah lagu terakhir dalam playlist, program akan kembali memutar lagu pertama.
 
-5. **Play Previous Song**: Menu option 4 plays the previous song in the playlist. If the current song is the first in the playlist, it will loop back to the last song.
+5. **Putar Lagu Sebelumnya**: Opsi menu 4 memutar lagu sebelumnya dalam playlist. Jika lagu saat ini adalah lagu pertama dalam playlist, program akan kembali memutar lagu terakhir.
 
-6. **Stop the Song**: Menu option 5 stops the currently playing song.
+6. **Hentikan Lagu**: Opsi menu 5 menghentikan lagu yang sedang diputar.
 
-7. **Delete Songs in Playlist**: Menu option 6 allows you to delete songs from the playlist. You can select a song to remove, and it will be removed from the playlist.
+7. **Hapus Lagu dalam Playlist**: Opsi menu 6 memungkinkan Anda menghapus lagu-lagu dari playlist. Anda dapat memilih lagu yang ingin dihapus, dan lagu tersebut akan dihapus dari playlist.
 
-8. **Search in Playlist**: Menu option 7 enables you to search for a specific song in the playlist. Enter the title of the song, and the program will display the corresponding song if found.
+8. **Cari dalam Playlist**: Opsi menu 7 memungkinkan Anda mencari lagu tertentu dalam playlist. Masukkan judul lagu, dan program akan menampilkan lagu yang sesuai jika ditemukan.
 
-9. **Toggle Add/Remove Song Feature**: Menu option 8 lets you enable or disable the feature to add and remove songs from the playlist. You can turn it on or off as per your preference.
+9. **Toggle Fitur Tambah/Hapus Lagu**: Opsi menu 8 memungkinkan Anda mengaktifkan atau menonaktifkan fitur untuk menambah dan menghapus lagu dari playlist. Anda dapat menghidupkan atau mematikan fitur ini sesuai keinginan.
 
-10. **Exit Program**: Menu option 9 allows you to exit the program gracefully.
+10. **Keluar dari Program**: Opsi menu 9 memungkinkan Anda keluar dari program dengan aman.
 
-## Prerequisites
+## Prasyarat
 
 - Python 3.x
-- Local folder 'songs' containing the music files
+- Folder lokal 'songs' yang berisi file musik
 
-## How to Run
+## Cara Menjalankan
 
-1. Clone or download this repository to your local machine.
+1. Clone atau unduh repository ini ke mesin lokal Anda.
 
-2. Ensure that your music files are placed in the 'songs' folder within the project directory.
+2. Pastikan file musik Anda ditempatkan dalam folder 'songs' di dalam direktori proyek.
 
-3. Open a terminal or command prompt and navigate to the project directory.
+3. Buka terminal atau command prompt, lalu navigasikan ke direktori proyek.
 
-4. Run the following command to start the program:
+4. Jalankan perintah berikut untuk memulai program:
 
-```python
-import os
-print("Hello, World!")
+```
+pytho3 main.py
 ```
 
-5. Follow the on-screen menu instructions to interact with the music playlist.
+5. Ikuti petunjuk menu yang ditampilkan di layar untuk berinteraksi dengan playlist musik.
 
 ## License
 
@@ -52,4 +51,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Feel free to modify and enhance it according to your needs.
 
-**Note**: Please ensure that you have the necessary permissions to use and distribute the music files in the 'songs' folder.
+**Note**: Pastikan Anda memiliki izin yang diperlukan untuk menggunakan dan mendistribusikan file musik dalam folder 'songs'.
