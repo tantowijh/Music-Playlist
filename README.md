@@ -20,9 +20,11 @@ Proyek ini mengimplementasikan sebuah playlist musik menggunakan struktur data d
 
 8. **Cari dalam Playlist**: Opsi menu 7 memungkinkan Anda mencari lagu tertentu dalam playlist. Masukkan judul lagu, dan program akan menampilkan lagu yang sesuai jika ditemukan.
 
-9. **Toggle Fitur Tambah/Hapus Lagu**: Opsi menu 8 memungkinkan Anda mengaktifkan atau menonaktifkan fitur untuk menambah dan menghapus lagu dari playlist. Anda dapat menghidupkan atau mematikan fitur ini sesuai keinginan.
+9. **Toggle Speaker Aktif/Non-Aktif**: Opsi menu 8 memungkinkan Anda mengaktifkan atau menonaktifkan fitur suara. Anda dapat menghidupkan atau mematikan fitur ini sesuai keinginan.
 
-10. **Keluar dari Program**: Opsi menu 9 memungkinkan Anda keluar dari program dengan aman.
+10. **Ganti Folder Memuat Musik**: Opsi menu 9 memungkinkan Anda mengganti folder yang digunakan untuk memuat musik.
+
+10. **Keluar dari Program**: Opsi menu 10 memungkinkan Anda keluar dari program dengan aman.
 
 ## Prasyarat
 
@@ -33,17 +35,23 @@ Proyek ini mengimplementasikan sebuah playlist musik menggunakan struktur data d
 
 1. Clone atau unduh repository ini ke mesin lokal Anda.
 
-2. Pastikan file musik Anda ditempatkan dalam folder 'songs' di dalam direktori proyek.
+2. Install library yang dibutuhkan dengan menjalankan perintah berikut:
 
-3. Buka terminal atau command prompt, lalu navigasikan ke direktori proyek.
+```
+pip install -r requirements.txt
+```
 
-4. Jalankan perintah berikut untuk memulai program:
+3. Pastikan file musik Anda ditempatkan dalam folder 'songs' di dalam direktori proyek.
+
+4. Buka terminal atau command prompt, lalu navigasikan ke direktori proyek.
+
+5. Jalankan perintah berikut untuk memulai program:
 
 ```
 pytho3 main.py
 ```
 
-5. Ikuti petunjuk menu yang ditampilkan di layar untuk berinteraksi dengan playlist musik.
+6. Ikuti petunjuk menu yang ditampilkan di layar untuk berinteraksi dengan playlist musik.
 
 ## License
 
@@ -51,4 +59,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Feel free to modify and enhance it according to your needs.
 
-**Note**: Pastikan Anda memiliki izin yang diperlukan untuk menggunakan dan mendistribusikan file musik dalam folder 'songs'.
+**Note**: Pastikan Anda memiliki izin yang diperlukan untuk menggunakan dan mendistribusikan file musik dalam folder 'songs'. Jika Anda mengaktifkan mode suara, pastikan Anda terhubung ke internet.
