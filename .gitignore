@@ -3,4 +3,6 @@ env/
 songs/*
 !songs/.gitkeep
 output.mp3
+test.py
+test2.py
 .DS_Store
