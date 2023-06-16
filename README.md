@@ -61,11 +61,11 @@ python main.py
 
 Instalasi library yang diperlukan:
 
-- gTTS   # pip install gTTS
-- langid   # pip install langid
-- sounddevice   # pip install sounddevice
-- soundfile   # pip install soundfile
-- numpy   # pip install numpy
+- gTTS
+- langid
+- sounddevice
+- soundfile
+- numpy
 
 Pastikan telah menginstal Google Text-to-Speech sebelumnya
 Pastikan telah menginstal LangID sebelumnya
