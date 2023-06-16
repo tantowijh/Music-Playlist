@@ -14,6 +14,7 @@ numpy # pip install numpy
 # - sys
 # - tempfile
 # - subprocess
+# - socket
 
 # Untuk menjalankan program dengan baik, pastikan semua library telah terinstal dengan benar
 # dengan cara menjalankan perintah berikut di terminal/command prompt:

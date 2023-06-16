@@ -1,5 +1,6 @@
 import os
 import time
+import socket
 from SoundBox import SoundBox as voice
 from SoundBox import PlaySong as AudioPlayer
 
@@ -30,10 +31,20 @@ class Playlist:
         self.tail = None
         self.current_song = None
         self.player = None
-        if enableSpeak:
+
+        # Mengecek internet connection
+        if enableSpeak and self.check_internet_connection():
             self.speak = voice
         else:
             self.speak = lambda text: None
+
+    def check_internet_connection(self):
+        try:
+            # Attempt to connect to Google's public DNS server
+            socket.create_connection(("8.8.8.8", 53), timeout=3)
+            return True
+        except socket.error:
+            return False
 
     def loadLocalSong(self):
         judul.clear()
@@ -42,7 +53,7 @@ class Playlist:
             # Jika folder tidak ada, buat folder
             os.makedirs(self.path)
         # Membaca lagu dari folder
-        for song in os.listdir(self.path):
+        for song in sorted(os.listdir(self.path)):
             _, file_extension = os.path.splitext(song)
             if file_extension.lower() in accepted_formats:
                 lokasi.append(f"{self.path}/{song}")
@@ -249,19 +260,19 @@ while True:
     App.namaProgram()
     Playlist.monitor_player_status()
     print("\nMenu:")
-    print("[ 1] Tambah daftar putar")
-    print("[ 2] Putar lagu saat ini")
-    print("[ 3] Putar lagu berikutnya")
-    print("[ 4] Putar lagu sebelumnya")
-    print("[ 5] Berhenti memutar lagu")
-    print("[ 6] Hapus dari daftar putar")
-    print("[ 7] Cari dalam daftar putar")
+    print(f"[{1:2}] {'♫':2} Tambah daftar putar")
+    print(f"[{2:2}] {'⏯':2} Putar lagu saat ini")
+    print(f"[{3:2}] {'⏭':2} Putar lagu berikutnya")
+    print(f"[{4:2}] {'⏮':2} Putar lagu sebelumnya")
+    print(f"[{5:2}] {'⏹':2} Berhenti memutar lagu")
+    print(f"[{6:2}] {'🚫'} Hapus dari daftar putar")
+    print(f"[{7:2}] {'🔎'} Cari dalam daftar putar")
     if Playlist.speak == voice:
-        print("[ 8] Matikan fungsi suara")
+        print(f"[{8:2}] {'❎'} Matikan fungsi suara")
     else:
-        print("[ 8] Nyalakan fungsi suara")
-    print("[ 9] Ganti direktori lagu")
-    print("[10] Keluar")
+        print(f"[{8:2}] {'✅'} Nyalakan fungsi suara")
+    print(f"[{9:2}] {'⏏️':3} Ganti direktori lagu")
+    print(f"[{10:2}] {'⛔'} Keluar")
     print("----------------------------")
     pilihan = input("Masukkan pilihan Anda: ")
 
@@ -294,7 +305,7 @@ while True:
             print("Lagu berhasil dihapus dari daftar putar")
         else:
             print("Lagu tidak ditemukan dalam daftar putar")
-        time.sleep(2)
+        time.sleep(1.5)
     elif pilihan == "7":
         if Playlist.isEmpty():
             continue
@@ -305,16 +316,20 @@ while True:
             print("Lagu ditemukan dalam daftar putar")
         else:
             print("Lagu tidak ditemukan dalam daftar putar")
-        time.sleep(2)
+        time.sleep(1.5)
     elif pilihan == "8":
         if Playlist.speak == voice:
             Playlist.speak = lambda text: None
             print("\nSuara dimatikan")
             time.sleep(1)
         else:
-            Playlist.speak = voice
-            print()
-            Playlist.speak("Menyalakan suara")
+            if Playlist.check_internet_connection():
+                Playlist.speak = voice
+                print()
+                Playlist.speak("Menyalakan suara")
+            else:
+                print("\nTidak ada koneksi internet!")
+                time.sleep(1.5)
     elif pilihan == "10":
         Playlist.stopping()
         break
@@ -323,6 +338,6 @@ while True:
         Playlist.updatePath(path)
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
-        time.sleep(2)
+        time.sleep(1.5)
 
 print("\nKeluar dari program\n")
