@@ -67,8 +67,7 @@ Instalasi library yang diperlukan:
 - soundfile
 - numpy
 
-Pastikan telah menginstal Google Text-to-Speech sebelumnya
-Pastikan telah menginstal LangID sebelumnya
+Pastikan telah menginstal library tersebut dengan benar.
 
 Library berikut merupakan library bawaan Python dan tidak perlu diinstal terpisah:
 
