@@ -48,10 +48,38 @@ pip install -r requirements.txt
 5. Jalankan perintah berikut untuk memulai program:
 
 ```
-pytho3 main.py
+python3 main.py
+```
+atau
+```
+python main.py
 ```
 
 6. Ikuti petunjuk menu yang ditampilkan di layar untuk berinteraksi dengan playlist musik.
+
+## Tampilan Instalasi Library
+
+Instalasi library yang diperlukan:
+
+- gTTS   # pip install gTTS
+- langid   # pip install langid
+- sounddevice   # pip install sounddevice
+- soundfile   # pip install soundfile
+- numpy   # pip install numpy
+
+Pastikan telah menginstal Google Text-to-Speech sebelumnya
+Pastikan telah menginstal LangID sebelumnya
+
+Library berikut merupakan library bawaan Python dan tidak perlu diinstal terpisah:
+
+- os
+- time
+- platform
+- sys
+- tempfile
+- subprocess
+
+Untuk menjalankan program dengan baik, pastikan semua library telah terinstal dengan benar.
 
 ## License
 

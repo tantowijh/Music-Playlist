@@ -1,7 +1,7 @@
 import os
 import time
-import subprocess
-from Speaker import Speak as voice
+from SoundBox import SoundBox as voice
+from SoundBox import PlaySong as AudioPlayer
 
 lokasi = []
 judul = []
@@ -114,18 +114,16 @@ class Playlist:
     
     def stopping(self):
         # Mematikan lagu yang sedang diputar
-        if self.player is not None and self.player.poll() is None:
-            print("\nMematikan lagu...")
-            self.player.terminate()
-        else:
-            print("\nTidak ada lagu yang sedang diputar!")
+        if self.player is not None:
+            self.player.stop()
+            self.player = None
     
     def play_song(self, song):
         # Memainkan lagu
-        if self.player is not None and self.player.poll() is None:
-            self.player.terminate()
-        command = ["python", "Player.py", song]
-        self.player = subprocess.Popen(command)
+        if self.player is not None:
+            self.player.stop()
+        self.player = AudioPlayer()
+        self.player.play(song)
 
 
     def play(self):
@@ -141,7 +139,7 @@ class Playlist:
         # Memantau status pemutaran lagu
         if self.current_song is not None:
             info, path = self.current_song.info()
-        if self.player is not None and self.player.poll() is None:
+        if self.player is not None:
             print("\nPlaying: \033[1;35m" + info + "\033[0m")  # Magenta
 
     def next(self):
