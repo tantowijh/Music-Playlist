@@ -1,4 +1,4 @@
-# Music Playlist Double Linked List
+# [Music Playlist](https://github.com/tantowijh/Music-Playlist) - Double Linked List
 
 Proyek ini mengimplementasikan sebuah playlist musik menggunakan struktur data doubly linked list dalam bahasa Python. Playlist ini memungkinkan Anda mengelola dan memutar musik dari folder lokal yang bernama 'songs'.
 
@@ -61,11 +61,11 @@ python main.py
 
 Instalasi library yang diperlukan:
 
-- gTTS
-- langid
-- sounddevice
-- soundfile
-- numpy
+- [gTTS](https://gtts.readthedocs.io/en/latest/)
+- [LangID](https://pypi.org/project/langid/)
+- [sounddevice](https://python-sounddevice.readthedocs.io/en/latest/)
+- [soundfile](https://pypi.org/project/SoundFile/)
+- [NumPy](https://numpy.org/doc/)
 
 Pastikan telah menginstal library tersebut dengan benar.
 
