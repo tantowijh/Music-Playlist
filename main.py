@@ -325,12 +325,12 @@ while True:
         else:
             Playlist.speaker = voice
             Playlist.speak("voices/Suara diaktifkan.mp3")
-    elif pilihan == "10":
-        Playlist.stopping()
-        break
     elif pilihan == "9":
         path = input("Masukkan path direktori lagu: ")
         Playlist.updatePath(path)
+    elif pilihan == "10":
+        Playlist.stopping()
+        break
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
         Playlist.speak("voices/Input tidak valid.mp3")
