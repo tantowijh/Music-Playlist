@@ -133,14 +133,15 @@ class Playlist:
             current = current.next_song
         return None
     
-    def stopping(self):
+    def stopping(self, arg=None):
         # Mematikan lagu yang sedang diputar
         if self.player is not None:
             self.player.stop()
             self.speak("voices/Berhenti memutar lagu.mp3")
             self.player = None
         else:
-            self.speak("voices/Tidak ada lagu yang diputar.mp3")
+            if arg is None:
+                self.speak("voices/Tidak ada lagu yang diputar.mp3")
     
     def play_song(self, song):
         # Memainkan lagu
@@ -328,7 +329,7 @@ while True:
         path = input("Masukkan path direktori lagu: ")
         Playlist.updatePath(path)
     elif pilihan == "10":
-        Playlist.stopping()
+        Playlist.stopping(exit)
         break
     else:
         Playlist.speak("voices/Input tidak valid.mp3")
