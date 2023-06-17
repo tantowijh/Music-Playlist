@@ -44,6 +44,7 @@ text_to_say_gen = [
     "Input tidak valid",
     "Lagu ditemukan",
     "Memutar lagu saat ini",
+    "Tidak ada lagu yang diputar",
 ]
 
 save = "voices"

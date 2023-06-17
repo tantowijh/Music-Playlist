@@ -43,7 +43,7 @@ class Playlist:
         self.speaker(voice_out).play()
     
     def speak(self, voice_in):
-        # Start the speaking thread
+        # Memulaikan thread untuk memutar suara
         if self.speaker != voice:
             print(f"{os.path.basename(os.path.splitext(voice_in)[0])}")
             time.sleep(1)
@@ -53,11 +53,10 @@ class Playlist:
         self.speaking_thread.start()
 
     def stop_speaking(self):
-        # Stop the speaking thread by setting the flag to False
+        # Menghentikan thread untuk memutar suara
         if self.speaking_thread is not None and self.speaking_thread.is_alive():
             self.speaker.keep_speaking = False
-
-        # Wait for the speaking thread to finish
+        # Menunggu thread selesai
         if self.speaking_thread is not None:
             self.speaking_thread.join()
 
@@ -140,6 +139,8 @@ class Playlist:
             self.player.stop()
             self.speak("voices/Berhenti memutar lagu.mp3")
             self.player = None
+        else:
+            self.speak("voices/Tidak ada lagu yang diputar.mp3")
     
     def play_song(self, song):
         # Memainkan lagu
