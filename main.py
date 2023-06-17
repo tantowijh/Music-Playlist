@@ -290,16 +290,12 @@ while True:
         App.load_playlist()
     elif pilihan == "2":
         Playlist.play()
-        time.sleep(1.5)
     elif pilihan == "3":
         Playlist.next()
-        time.sleep(1.5)
     elif pilihan == "4":
         Playlist.prev()
-        time.sleep(1.5)
     elif pilihan == "5":
         Playlist.stopping()
-        time.sleep(1.5)
     elif pilihan == "6":
         if Playlist.isEmpty():
             continue
