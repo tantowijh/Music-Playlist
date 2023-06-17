@@ -40,7 +40,7 @@ class Playlist:
 
     def check_internet_connection(self):
         try:
-            # Attempt to connect to Google's public DNS server
+            # Mencoba membuat koneksi ke DNS Google pada port 53, timeout 3 detik
             socket.create_connection(("8.8.8.8", 53), timeout=3)
             return True
         except socket.error:
@@ -248,7 +248,7 @@ class Application:
             print("Lagu tidak ditemukan dalam daftar lagu")
             time.sleep(2)
             return
-        Playlist.add_song(judul[int(tambah)-1], lokasi[int(tambah)-1])
+        Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
 
 # Buat objek daftar putar
 Playlist = Playlist()
@@ -268,9 +268,9 @@ while True:
     print(f"[{6:2}] {'🚫'} Hapus dari daftar putar")
     print(f"[{7:2}] {'🔎'} Cari dalam daftar putar")
     if Playlist.speak == voice:
-        print(f"[{8:2}] {'❎'} Matikan fungsi suara")
+        print(f"[{8:2}] {'🔇'} Matikan fungsi suara")
     else:
-        print(f"[{8:2}] {'✅'} Nyalakan fungsi suara")
+        print(f"[{8:2}] {'🔊'} Nyalakan fungsi suara")
     print(f"[{9:2}] {'⏏️':3} Ganti direktori lagu")
     print(f"[{10:2}] {'⛔'} Keluar")
     print("----------------------------")
