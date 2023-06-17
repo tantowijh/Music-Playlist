@@ -1,7 +1,7 @@
 import os
 import time
-import socket
-from SoundBox import SoundBox as voice
+from threading import Thread
+from Player import AudioPlayer as voice
 from SoundBox import PlaySong as AudioPlayer
 
 lokasi = []
@@ -31,20 +31,35 @@ class Playlist:
         self.tail = None
         self.current_song = None
         self.player = None
+        self.speaking_thread = None
 
-        # Mengecek internet connection
-        if enableSpeak and self.check_internet_connection():
-            self.speak = voice
+        if enableSpeak:
+            self.speaker = voice
         else:
-            self.speak = lambda text: None
+            self.speaker = lambda text: None
+        
+    def speaking(self, voice_out):
+        # Memutar suara
+        self.speaker(voice_out).play()
+    
+    def speak(self, voice_in):
+        # Start the speaking thread
+        if self.speaker != voice:
+            print(f"{os.path.basename(os.path.splitext(voice_in)[0])}")
+            time.sleep(1)
+            return
+        self.stop_speaking()
+        self.speaking_thread = Thread(target=self.speaking, args=(voice_in,))
+        self.speaking_thread.start()
 
-    def check_internet_connection(self):
-        try:
-            # Mencoba membuat koneksi ke DNS Google pada port 53, timeout 3 detik
-            socket.create_connection(("8.8.8.8", 53), timeout=3)
-            return True
-        except socket.error:
-            return False
+    def stop_speaking(self):
+        # Stop the speaking thread by setting the flag to False
+        if self.speaking_thread is not None and self.speaking_thread.is_alive():
+            self.speaker.keep_speaking = False
+
+        # Wait for the speaking thread to finish
+        if self.speaking_thread is not None:
+            self.speaking_thread.join()
 
     def loadLocalSong(self):
         judul.clear()
@@ -62,19 +77,18 @@ class Playlist:
     def updatePath(self, new_path=""):
         if new_path:
             if not os.path.exists(new_path):
-                print("Direktori tidak ditemukan! Buat direktori baru atau masukkan direktori yang benar.")
-                time.sleep(2)
+                self.speak("voices/Direktori tidak ditemukan.mp3")
                 return
             self.path = new_path
         self.loadLocalSong()
+        self.speak("voices/Direktori berhasil diubah.mp3")
 
     def add_song(self, title, path):
         # Menambahkan lagu ke daftar putar
         new_song = Song(title, path)
         # Cek apakah lagu sudah ada dalam daftar putar
         if self.search_song(title) is not None:
-            print("Lagu sudah ada dalam daftar putar")
-            time.sleep(2)
+            self.speak("voices/Lagu sudah ada.mp3")
             return
         # Menambahkan lagu ke daftar putar
         if self.head is None:
@@ -86,8 +100,7 @@ class Playlist:
             new_song.prev_song = self.tail
             self.tail.next_song = new_song
             self.tail = new_song
-        self.speak(f"{title}")
-        self.speak(f"berhasil ditambahkan ke daftar putar")
+        self.speak("voices/Berhasil menambahkan lagu.mp3")
 
     def remove_song(self, song):
         # Menghapus lagu dari daftar putar
@@ -109,9 +122,7 @@ class Playlist:
             if song.next_song is not None:
                 song.next_song.prev_song = song.prev_song
             self.current_song = song.next_song
-
-        self.speak(f"{song.title}")
-        self.speak(f"berhasil dihapus dari daftar putar")
+        self.speak("voices/Berhasil menghapus lagu.mp3")
 
     def search_song(self, title):
         # Mencari lagu dalam daftar putar
@@ -127,6 +138,7 @@ class Playlist:
         # Mematikan lagu yang sedang diputar
         if self.player is not None:
             self.player.stop()
+            self.speak("voices/Berhenti memutar lagu.mp3")
             self.player = None
     
     def play_song(self, song):
@@ -141,10 +153,10 @@ class Playlist:
         # Memainkan lagu saat ini
         if self.current_song is not None:
             info, path = self.current_song.info()
-            print("Playing:", info)
             self.play_song(path)
+            self.speak("voices/Memutar lagu saat ini.mp3")
         else:
-            print("Daftar putar kosong!")
+            self.speak("voices/Daftar putar kosong.mp3")
 
     def monitor_player_status(self):
         # Memantau status pemutaran lagu
@@ -158,20 +170,20 @@ class Playlist:
         if self.current_song is not None and self.current_song.next_song is not None:
             self.current_song = self.current_song.next_song
             info, path = self.current_song.info()
-            print("Memutar lagu selanjutnya:", info)
             self.play_song(path)
+            self.speak("voices/Memutar lagu berikutnya.mp3")
         else:
-            print("Akhir daftar putar")
+            self.speak("voices/Daftar putar terakhir.mp3")
 
     def prev(self):
         # Memainkan lagu sebelumnya
         if self.current_song is not None and self.current_song.prev_song is not None:
             self.current_song = self.current_song.prev_song
             info, path = self.current_song.info()
-            print("Memutar lagu sebelumnya:", info)
             self.play_song(path)
+            self.speak("voices/Memutar lagu sebelumnya.mp3")
         else:
-            print("Awal daftar putar")
+            self.speak("voices/Daftar putar pertama.mp3")
 
     def display(self):
         # Menampilkan daftar putar
@@ -196,7 +208,7 @@ class Playlist:
     def isEmpty(self):
         # Cek apakah daftar putar kosong
         if Playlist.head is None:
-            print("\nDaftar putar kosong!")
+            self.speak("voices/Daftar putar kosong.mp3")
             time.sleep(2)
             return True
 
@@ -234,19 +246,16 @@ class Application:
             for index, lagu in enumerate(judul, start=1):
                 print(f"[{index:2}] {lagu}")
         else:
-            print("Tidak ada lagu yang tersedia!")
-            time.sleep(2)
+            self.speak("voices/Lagu tidak ditemukan.mp3")
             return
         print("----------------------------------------------------------")
         try:
             tambah = int(input("Pilih lagu yang ingin ditambahkan ke daftar putar: "))
         except ValueError:
-            print("Input harus berupa angka!")
-            time.sleep(2)
+            self.speak("voices/Input tidak valid.mp3")
             return
         if tambah not in range(1, len(judul)+1):
-            print("Lagu tidak ditemukan dalam daftar lagu")
-            time.sleep(2)
+            self.speak("voices/Lagu tidak ditemukan.mp3")
             return
         Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
 
@@ -267,7 +276,7 @@ while True:
     print(f"[{5:2}] {'⏹':2} Berhenti memutar lagu")
     print(f"[{6:2}] {'🚫'} Hapus dari daftar putar")
     print(f"[{7:2}] {'🔎'} Cari dalam daftar putar")
-    if Playlist.speak == voice:
+    if Playlist.speaker == voice:
         print(f"[{8:2}] {'🔇'} Matikan fungsi suara")
     else:
         print(f"[{8:2}] {'🔊'} Nyalakan fungsi suara")
@@ -280,15 +289,12 @@ while True:
         print("\nDaftar Putar:")
         App.load_playlist()
     elif pilihan == "2":
-        print("\nMemutar lagu saat ini:")
         Playlist.play()
         time.sleep(1.5)
     elif pilihan == "3":
-        print("\nMemutar lagu berikutnya:")
         Playlist.next()
         time.sleep(1.5)
     elif pilihan == "4":
-        print("\nMemutar lagu sebelumnya:")
         Playlist.prev()
         time.sleep(1.5)
     elif pilihan == "5":
@@ -305,7 +311,7 @@ while True:
             print("Lagu berhasil dihapus dari daftar putar")
         else:
             print("Lagu tidak ditemukan dalam daftar putar")
-        time.sleep(1.5)
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
     elif pilihan == "7":
         if Playlist.isEmpty():
             continue
@@ -313,23 +319,16 @@ while True:
         judul_lagu = input("Masukkan judul lagu yang akan dicari: ")
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
-            print("Lagu ditemukan dalam daftar putar")
+            Playlist.speak("voices/Lagu ditemukan.mp3")
         else:
-            print("Lagu tidak ditemukan dalam daftar putar")
-        time.sleep(1.5)
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
     elif pilihan == "8":
-        if Playlist.speak == voice:
-            Playlist.speak = lambda text: None
-            print("\nSuara dimatikan")
-            time.sleep(1)
+        if Playlist.speaker == voice:
+            Playlist.speak("voices/Suara dinonaktifkan.mp3")
+            Playlist.speaker = lambda text: None
         else:
-            if Playlist.check_internet_connection():
-                Playlist.speak = voice
-                print()
-                Playlist.speak("Menyalakan suara")
-            else:
-                print("\nTidak ada koneksi internet!")
-                time.sleep(1.5)
+            Playlist.speaker = voice
+            Playlist.speak("voices/Suara diaktifkan.mp3")
     elif pilihan == "10":
         Playlist.stopping()
         break
@@ -338,6 +337,6 @@ while True:
         Playlist.updatePath(path)
     else:
         print("Pilihan tidak valid. Silakan coba lagi.")
-        time.sleep(1.5)
+        Playlist.speak("voices/Input tidak valid.mp3")
 
 print("\nKeluar dari program\n")
