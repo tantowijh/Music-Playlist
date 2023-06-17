@@ -304,9 +304,7 @@ while True:
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
             Playlist.remove_song(lagu)
-            print("Lagu berhasil dihapus dari daftar putar")
         else:
-            print("Lagu tidak ditemukan dalam daftar putar")
             Playlist.speak("voices/Lagu tidak ditemukan.mp3")
     elif pilihan == "7":
         if Playlist.isEmpty():
@@ -332,7 +330,6 @@ while True:
         Playlist.stopping()
         break
     else:
-        print("Pilihan tidak valid. Silakan coba lagi.")
         Playlist.speak("voices/Input tidak valid.mp3")
 
 print("\nKeluar dari program\n")
