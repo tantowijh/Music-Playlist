@@ -78,6 +78,7 @@ Library berikut merupakan library bawaan Python dan tidak perlu diinstal terpisa
 - tempfile
 - subprocess
 - socket
+- threading
 
 Untuk menjalankan program dengan baik, pastikan semua library telah terinstal dengan benar.
 
