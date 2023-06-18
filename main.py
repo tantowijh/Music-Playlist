@@ -249,16 +249,16 @@ class Application:
             for index, lagu in enumerate(judul, start=1):
                 print(f"[{index:2}] {lagu}")
         else:
-            self.speak("voices/Lagu tidak ditemukan.mp3")
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
             return
         print("----------------------------------------------------------")
         try:
             tambah = int(input("Pilih lagu yang ingin ditambahkan ke daftar putar: "))
         except ValueError:
-            self.speak("voices/Input tidak valid.mp3")
+            Playlist.speak("voices/Input tidak valid.mp3")
             return
         if tambah not in range(1, len(judul)+1):
-            self.speak("voices/Lagu tidak ditemukan.mp3")
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
             return
         Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
 
