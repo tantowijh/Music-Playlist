@@ -105,6 +105,7 @@ class Playlist:
         # Menghentikan lagu jika sedang diputar
         if self.monitor_player_status("apasaja"):
             self.stopping()
+            self.current_song = None
         # Menghapus lagu dari daftar putar
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
