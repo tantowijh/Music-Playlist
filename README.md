@@ -62,7 +62,6 @@ python main.py
 Instalasi library yang diperlukan:
 
 - [gTTS](https://gtts.readthedocs.io/en/latest/)
-- [LangID](https://pypi.org/project/langid/)
 - [sounddevice](https://python-sounddevice.readthedocs.io/en/latest/)
 - [soundfile](https://pypi.org/project/SoundFile/)
 - [NumPy](https://numpy.org/doc/)

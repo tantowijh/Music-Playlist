@@ -47,8 +47,6 @@ text_to_say_gen = [
     "Tidak ada lagu yang diputar",
 ]
 
-save = "voices"
-
 if __name__ == "__main__":
     for voice in text_to_say_gen:
         VoiceGenerator(voice, voice, 'id')

@@ -1,5 +1,4 @@
 gTTS   # pip install gTTS
-langid   # pip install langid
 sounddevice # pip install simpleaudio
 soundfile # pip install soundfile
 numpy # pip install numpy

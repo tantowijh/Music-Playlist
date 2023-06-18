@@ -2,7 +2,7 @@ import os
 import time
 from threading import Thread
 from Player import AudioPlayer as voice
-from SoundBox import PlaySong as AudioPlayer
+from PlaySong import PlaySong
 
 lokasi = []
 judul = []
@@ -68,10 +68,11 @@ class Playlist:
             os.makedirs(self.path)
         # Membaca lagu dari folder
         for song in sorted(os.listdir(self.path)):
+            # Memisahkan judul lagu dan ekstensi file
             _, file_extension = os.path.splitext(song)
             if file_extension.lower() in accepted_formats:
                 lokasi.append(f"{self.path}/{song}")
-                judul.append(os.path.splitext(song)[0])
+                judul.append(_)
     
     def updatePath(self, new_path=""):
         if new_path:
@@ -110,6 +111,8 @@ class Playlist:
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
             self.head = song.next_song
+            if self.current_song == song:
+                self.current_song = None
         if song is self.tail:
             # Jika lagu yang dihapus adalah lagu terakhir
             self.tail = song.prev_song
@@ -147,7 +150,7 @@ class Playlist:
         # Memainkan lagu
         if self.player is not None:
             self.player.stop()
-        self.player = AudioPlayer()
+        self.player = PlaySong()
         self.player.play(song)
 
 
@@ -201,9 +204,9 @@ class Playlist:
             if current == self.current_song:
                 print(f"{no}) \033[1;32m{info}\033[0m [Lagu saat ini]")  # Green
             elif self.current_song is not None and current == self.current_song.next_song:
-                print(f"{no}) \033[1;34m{info}\033[0m [Lagu berikutnya]")
+                print(f"{no}) \033[1;34m{info}\033[0m [Lagu berikutnya]") # Blue
             elif self.current_song is not None and current == self.current_song.prev_song:
-                print(f"{no}) \033[1;31m{info}\033[0m [Lagu sebelumnya]")
+                print(f"{no}) \033[1;31m{info}\033[0m [Lagu sebelumnya]") # Red
             else:
                 print(f"{no}) {info}")
             current = current.next_song
@@ -219,6 +222,7 @@ class Playlist:
 class Application:
     def clearScreen(self):
         os.system('cls' if os.name == 'nt' else 'clear')
+
     def namaProgram(self):
         # Nama program
         program_name = "MUSIC PLAYER"
@@ -263,7 +267,7 @@ class Application:
             return
         Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
 
-# Buat objek daftar putar
+# Buat objek / instance daftar putar
 Playlist = Playlist()
 App = Application()
 
@@ -303,7 +307,6 @@ while True:
     elif pilihan == "6":
         if Playlist.isEmpty():
             continue
-        print()
         judul_lagu = input("Masukkan judul lagu yang akan dihapus: ")
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
@@ -313,7 +316,6 @@ while True:
     elif pilihan == "7":
         if Playlist.isEmpty():
             continue
-        print()
         judul_lagu = input("Masukkan judul lagu yang akan dicari: ")
         lagu = Playlist.search_song(judul_lagu)
         if lagu:
