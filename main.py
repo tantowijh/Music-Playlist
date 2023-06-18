@@ -102,6 +102,9 @@ class Playlist:
         self.speak("voices/Berhasil menambahkan lagu.mp3")
 
     def remove_song(self, song):
+        # Menghentikan lagu jika sedang diputar
+        if self.monitor_player_status("apasaja"):
+            self.stopping()
         # Menghapus lagu dari daftar putar
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
@@ -111,16 +114,12 @@ class Playlist:
             self.tail = song.prev_song
         if song.prev_song is not None:
             # Jika lagu yang dihapus bukan lagu pertama
+            self.current_song = song.prev_song
             song.prev_song.next_song = song.next_song
         if song.next_song is not None:
             # Jika lagu yang dihapus bukan lagu terakhir
-            song.next_song.prev_song = song.prev_song
-        if song is self.current_song:
-            # Jika lagu yang dihapus adalah lagu yang sedang diputar
-            self.stopping()
-            if song.next_song is not None:
-                song.next_song.prev_song = song.prev_song
             self.current_song = song.next_song
+            song.next_song.prev_song = song.prev_song
         self.speak("voices/Berhasil menghapus lagu.mp3")
 
     def search_song(self, title):
@@ -160,12 +159,14 @@ class Playlist:
         else:
             self.speak("voices/Daftar putar kosong.mp3")
 
-    def monitor_player_status(self):
+    def monitor_player_status(self, arg=None):
         # Memantau status pemutaran lagu
         if self.current_song is not None:
             info, path = self.current_song.info()
         if self.player is not None:
-            print("\nPlaying: \033[1;35m" + info + "\033[0m")  # Magenta
+            if arg is None:
+                print("\nPlaying: \033[1;35m" + info + "\033[0m")  # Magenta
+            else: return True
 
     def next(self):
         # Memainkan lagu berikutnya
@@ -198,9 +199,9 @@ class Playlist:
             info, path = current.info()
             if current == self.current_song:
                 print(f"{no}) \033[1;32m{info}\033[0m [Lagu saat ini]")  # Green
-            elif current == self.current_song.next_song:
+            elif self.current_song is not None and current == self.current_song.next_song:
                 print(f"{no}) \033[1;34m{info}\033[0m [Lagu berikutnya]")
-            elif current == self.current_song.prev_song:
+            elif self.current_song is not None and current == self.current_song.prev_song:
                 print(f"{no}) \033[1;31m{info}\033[0m [Lagu sebelumnya]")
             else:
                 print(f"{no}) {info}")
