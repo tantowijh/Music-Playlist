@@ -6,7 +6,7 @@ from PlaySong import PlaySong
 
 lokasi = []
 judul = []
-path = f"{os.path.dirname(os.path.abspath(__file__))}/songs"
+path = "songs"
 accepted_formats = [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"]
 center = 50
 
@@ -49,8 +49,7 @@ class Playlist:
             time.sleep(1)
             return
         self.stop_speaking()
-        voice_path = f"{os.path.dirname(os.path.abspath(__file__))}/{voice_in}"
-        self.speaking_thread = Thread(target=self.speaking, args=(voice_path,))
+        self.speaking_thread = Thread(target=self.speaking, args=(voice_in,))
         self.speaking_thread.start()
 
     def stop_speaking(self):
