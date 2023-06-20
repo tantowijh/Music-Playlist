@@ -1,8 +1,8 @@
 import os
 import time
 from threading import Thread
-from Player import AudioPlayer as voice
-from PlaySong import PlaySong
+from simpleplayer import PlaySong as voice
+from simpleplayer import PlaySong
 
 lokasi = []
 judul = []
@@ -83,23 +83,94 @@ class Playlist:
         self.loadLocalSong()
         self.speak("voices/Direktori berhasil diubah.mp3")
 
+    def song_exist(self, title, arg=None):
+        if self.search_song(title) is not None:
+            if arg is None:
+                self.speak("voices/Lagu sudah ada.mp3")
+            return True
+
     def add_song(self, title, path):
         # Menambahkan lagu ke daftar putar
         new_song = Song(title, path)
-        # Cek apakah lagu sudah ada dalam daftar putar
-        if self.search_song(title) is not None:
-            self.speak("voices/Lagu sudah ada.mp3")
-            return
-        # Menambahkan lagu ke daftar putar
         if self.head is None:
             self.head = new_song
             self.tail = new_song
             self.current_song = new_song
-        # Jika daftar putar tidak kosong
         else:
-            new_song.prev_song = self.tail
             self.tail.next_song = new_song
+            new_song.prev_song = self.tail
             self.tail = new_song
+        self.speak("voices/Berhasil menambahkan lagu.mp3")
+
+    def add_song_in_start(self, title, path):
+        # Menambahkan lagu ke daftar putar
+        new_song = Song(title, path)
+        if self.head is None:
+            self.head = new_song
+            self.tail = new_song
+            self.current_song = new_song
+        else:
+            new_song.next_song = self.head
+            self.head.prev_song = new_song
+            self.head = new_song
+        self.speak("voices/Berhasil menambahkan lagu.mp3")
+
+    def add_song_in_end(self, title, path):
+        new_song = Song(title, path)
+        if self.head is None:
+            self.head = new_song
+            self.tail = new_song
+            self.current_song = new_song
+        else:
+            self.tail.next_song = new_song
+            new_song.prev_song = self.tail
+            self.tail = new_song
+        self.speak("voices/Berhasil menambahkan lagu.mp3")
+
+    def add_song_after(self, title, path, after):
+        new_song = Song(title, path)
+        if not self.song_exist(after, any):
+            return
+        if self.head is None:
+            self.head = new_song
+            self.tail = new_song
+            self.current_song = new_song
+        else:
+            current = self.head
+            while current is not None:
+                if current.title == after:
+                    new_song.next_song = current.next_song
+                    new_song.prev_song = current
+                    current.next_song = new_song
+                    if new_song.next_song is not None:
+                        new_song.next_song.prev_song = new_song
+                    else:
+                        self.tail = new_song
+                    break
+                current = current.next_song
+        self.speak("voices/Berhasil menambahkan lagu.mp3")
+
+    def add_song_before(self, title, path, before):
+        new_song = Song(title, path)
+        if not self.song_exist(before, any):
+            return
+        if self.head is None:
+            self.head = new_song
+            self.tail = new_song
+            self.current_song = new_song
+        else:
+            current = self.head
+            while current is not None:
+                if current.title == before:
+                    new_song.prev_song = current.prev_song
+                    new_song.next_song = current
+                    current.prev_song = new_song
+                    if new_song.prev_song is not None:
+                        new_song.prev_song.next_song = new_song
+                    else:
+                        self.head = new_song
+                    break
+                current = current.next_song
         self.speak("voices/Berhasil menambahkan lagu.mp3")
 
     def remove_song(self, song):
@@ -150,8 +221,8 @@ class Playlist:
         # Memainkan lagu
         if self.player is not None:
             self.player.stop()
-        self.player = PlaySong()
-        self.player.play(song)
+        self.player = PlaySong(song)
+        self.player.play()
 
 
     def play(self):
@@ -212,11 +283,11 @@ class Playlist:
             current = current.next_song
             no += 1
     
-    def isEmpty(self):
+    def isEmpty(self, arg=None):
         # Cek apakah daftar putar kosong
         if Playlist.head is None:
-            self.speak("voices/Daftar putar kosong.mp3")
-            time.sleep(2)
+            if arg is None:
+                self.speak("voices/Daftar putar kosong.mp3")
             return True
 
 class Application:
@@ -265,7 +336,45 @@ class Application:
         if tambah not in range(1, len(judul)+1):
             Playlist.speak("voices/Lagu tidak ditemukan.mp3")
             return
-        Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
+        if Playlist.isEmpty(any):
+            Playlist.add_song(judul[tambah-1], lokasi[tambah-1])
+            return
+        
+        # Cek apakah lagu sudah ada dalam daftar putar
+        if Playlist.song_exist(judul[tambah-1]):
+            return
+        print("----------------------------------------------------------")
+        print("Daftar Putar saat ini: ")
+        Playlist.display()
+        print("----------------------------------------------------------")
+        print("Pilih posisi lagu yang ingin ditambahkan ke daftar putar:")
+        print("[1] Tambah di awal daftar putar")
+        print("[2] Tambah di akhir daftar putar")
+        print("[3] Tambah setelah lagu tertentu")
+        print("[4] Tambah sebelum lagu tertentu")
+        print("----------------------------------------------------------")
+
+        try:
+            posisi = int(input("Masukkan pilihan Anda: "))
+        except ValueError:
+            Playlist.speak("voices/Input tidak valid.mp3")
+            return
+        if posisi not in range(1, 5):
+            Playlist.speak("voices/Input tidak valid.mp3")
+            return
+        print("----------------------------------------------------------")
+
+        if posisi == 1:
+            Playlist.add_song_in_start(judul[tambah-1], lokasi[tambah-1])
+        elif posisi == 2:
+            Playlist.add_song_in_end(judul[tambah-1], lokasi[tambah-1])
+        elif posisi == 3:
+            Playlist.add_song_after(judul[tambah-1], lokasi[tambah-1], input("Tambah setelah lagu: "))
+        elif posisi == 4:
+            Playlist.add_song_before(judul[tambah-1], lokasi[tambah-1], input("Tambah sebelum lagu: "))
+        else:
+            Playlist.speak("voices/Input tidak valid.mp3")
+            return
 
 # Buat objek / instance daftar putar
 Playlist = Playlist()
