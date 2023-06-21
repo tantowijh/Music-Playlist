@@ -42,11 +42,12 @@ class Playlist:
         # Memutar suara
         self.speaker(voice_out).play()
     
-    def speak(self, voice_in):
+    def speak(self, voice_in, arg=None):
         # Memulaikan thread untuk memutar suara
         if self.speaker != voice:
-            print(f"{os.path.basename(os.path.splitext(voice_in)[0])}")
-            time.sleep(1)
+            if arg is None:
+                print(f"{os.path.basename(os.path.splitext(voice_in)[0])}")
+                time.sleep(1)
             return
         self.stop_speaking()
         self.speaking_thread = Thread(target=self.speaking, args=(voice_in,))
@@ -509,7 +510,7 @@ while True:
         App.pencarian_lagu()
     elif pilihan == "8":
         if Playlist.speaker == voice:
-            Playlist.speak("voices/Suara dinonaktifkan.mp3")
+            Playlist.speak("voices/mute.mp3", 'mute')
             Playlist.speaker = lambda text: None
         else:
             Playlist.speaker = voice
