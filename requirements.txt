@@ -1,19 +1,11 @@
-gTTS   # pip install gTTS
-sounddevice # pip install simpleaudio
-soundfile # pip install soundfile
-numpy # pip install numpy
+simpleplayer==0.0.2 # pip install simpleplayer
 
-# Pastikan telah menginstal Google Text-to-Speech sebelumnya
-# Pastikan telah menginstal LangID sebelumnya
+# Pastikan telah menginstal simpleplayer dengan benar, module ini digunakan untuk memutar musik
+# -> pip show simpleplayer, setelah di install untuk melihat informasi
 
 # Library berikut merupakan library bawaan Python dan tidak perlu diinstal terpisah:
 # - os
 # - time
-# - platform
-# - sys
-# - tempfile
-# - subprocess
-# - socket
 # - threading
 
 # Untuk menjalankan program dengan baik, pastikan semua library telah terinstal dengan benar

@@ -8,7 +8,7 @@ lokasi = []
 judul = []
 path = "songs"
 accepted_formats = [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a"]
-center = 50
+center = 58
 
 class Song:
     def __init__(self, title, path):
@@ -172,6 +172,33 @@ class Playlist:
                     break
                 current = current.next_song
         self.speak("voices/Berhasil menambahkan lagu.mp3")
+    
+    def delete_at_start(self):
+        # Menghentikan lagu jika sedang diputar
+        if self.monitor_player_status("apasaja"):
+            self.stopping()
+            self.current_song = None
+        # Menghapus lagu dari daftar putar
+        if self.head.next_song is None:
+            self.head = None
+            return
+        self.head = self.head.next_song
+        self.prev_song = None
+        self.speak("voices/Berhasil menghapus lagu.mp3")
+    
+    def delete_at_end(self):
+        # Menghentikan lagu jika sedang diputar
+        if self.monitor_player_status("apasaja"):
+            self.stopping()
+            self.current_song = None
+        if self.head.next_song is None:
+            self.head = None
+            return
+        current = self.head
+        while current.next_song is not None:
+            current = current.next_song
+        current.prev_song.next_song = None
+        self.speak("voices/Berhasil menghapus lagu.mp3")
 
     def remove_song(self, song):
         # Menghentikan lagu jika sedang diputar
@@ -321,13 +348,14 @@ class Application:
     def load_playlist(self):
         # Menampilkan daftar lagu
         self.subtitle("Daftar Lagu Tersedia")
+        print("------------------------------------------------------------")
         if judul:
             for index, lagu in enumerate(judul, start=1):
                 print(f"[{index:2}] {lagu}")
         else:
             Playlist.speak("voices/Lagu tidak ditemukan.mp3")
             return
-        print("----------------------------------------------------------")
+        print("------------------------------------------------------------")
         try:
             tambah = int(input("Pilih lagu yang ingin ditambahkan ke daftar putar: "))
         except ValueError:
@@ -343,16 +371,16 @@ class Application:
         # Cek apakah lagu sudah ada dalam daftar putar
         if Playlist.song_exist(judul[tambah-1]):
             return
-        print("----------------------------------------------------------")
+        print("------------------------------------------------------------")
         print("Daftar Putar saat ini: ")
         Playlist.display()
-        print("----------------------------------------------------------")
+        print("------------------------------------------------------------")
         print("Pilih posisi lagu yang ingin ditambahkan ke daftar putar:")
         print("[1] Tambah di awal daftar putar")
         print("[2] Tambah di akhir daftar putar")
         print("[3] Tambah setelah lagu tertentu")
         print("[4] Tambah sebelum lagu tertentu")
-        print("----------------------------------------------------------")
+        print("------------------------------------------------------------")
 
         try:
             posisi = int(input("Masukkan pilihan Anda: "))
@@ -362,7 +390,7 @@ class Application:
         if posisi not in range(1, 5):
             Playlist.speak("voices/Input tidak valid.mp3")
             return
-        print("----------------------------------------------------------")
+        print("------------------------------------------------------------")
 
         if posisi == 1:
             Playlist.add_song_in_start(judul[tambah-1], lokasi[tambah-1])
@@ -375,6 +403,41 @@ class Application:
         else:
             Playlist.speak("voices/Input tidak valid.mp3")
             return
+        
+    def delete_playlist(self):
+        if Playlist.isEmpty():
+            return
+        print("------------------------------------------------------------")
+        print("Daftar Putar saat ini: ")
+        Playlist.display()
+        print("------------------------------------------------------------")
+        print("Hapus lagu berdasarkan:")
+        print("[1] Hapus lagu di awal daftar putar")
+        print("[2] Hapus lagu di akhir daftar putar")
+        print("[3] Hapus lagu tertentu")
+        print("------------------------------------------------------------")
+        try:
+            hapus = int(input("Pilih lagu yang ingin dihapus dari daftar putar: "))
+        except ValueError:
+            Playlist.speak("voices/Input tidak valid.mp3")
+            return
+        if hapus not in range(1, len(judul)+1):
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+            return
+        print("------------------------------------------------------------")
+        if hapus == 1:
+            Playlist.delete_at_start()
+        elif hapus == 2:
+            Playlist.delete_at_end()
+        elif hapus == 3:
+            judul_lagu = input("Masukkan judul lagu yang akan dihapus: ")
+            lagu = Playlist.search_song(judul_lagu)
+            if lagu:
+                Playlist.remove_song(lagu)
+            else:
+                Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+        else:
+            Playlist.speak("voices/Input tidak valid.mp3")
 
 # Buat objek / instance daftar putar
 Playlist = Playlist()
@@ -399,7 +462,7 @@ while True:
         print(f"[{8:2}] {'🔊'} Nyalakan fungsi suara")
     print(f"[{9:2}] {'⏏️':3} Ganti direktori lagu")
     print(f"[{10:2}] {'⛔'} Keluar")
-    print("----------------------------")
+    print("------------------------------------------------------------")
     pilihan = input("Masukkan pilihan Anda: ")
 
     if pilihan == "1":
@@ -414,14 +477,7 @@ while True:
     elif pilihan == "5":
         Playlist.stopping()
     elif pilihan == "6":
-        if Playlist.isEmpty():
-            continue
-        judul_lagu = input("Masukkan judul lagu yang akan dihapus: ")
-        lagu = Playlist.search_song(judul_lagu)
-        if lagu:
-            Playlist.remove_song(lagu)
-        else:
-            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+        App.delete_playlist()
     elif pilihan == "7":
         if Playlist.isEmpty():
             continue

@@ -1,7 +1,6 @@
 import os
 from simpleplayer import voicegen
 
-
 text_to_say_gen = [
     "Suara diaktifkan",
     "Suara dinonaktifkan",
@@ -21,11 +20,11 @@ text_to_say_gen = [
     "Lagu ditemukan",
     "Memutar lagu saat ini",
     "Tidak ada lagu yang diputar",
-    "Jeda memutar lagu",
-    "Lanjut memutar lagu",
 ]
+
 if not os.path.exists('voices'):
     os.makedirs('voices')
+    
 if __name__ == "__main__":
     for voice in text_to_say_gen:
         voicegen(voice, f"voices/{voice}", 'id')
