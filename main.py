@@ -178,13 +178,14 @@ class Playlist:
         # Menghentikan lagu jika sedang diputar
         if self.current_song == current:
             if self.monitor_player_status("apasaja"):
-                self.stopping()
+                self.stopping("delete")
         self.head = current.next_song
         self.current_song = self.head
         self.speak("voices/Berhasil menghapus lagu.mp3")
     
     def delete_at_end(self):
         current = self.head
+        ekor = self.tail
         if current.next_song is None:
             self.head = None
             return
@@ -192,9 +193,10 @@ class Playlist:
             if current.next_song is None:
                 self.tail = current.prev_song
                 self.tail.next_song = None
-                if self.monitor_player_status("apasaja"):
-                    self.stopping()
-                self.current_song = current.prev_song
+                if self.current_song == current:
+                    if self.monitor_player_status("apasaja"):
+                        self.stopping("delete")
+                    self.current_song = current.prev_song
                 break
             current = current.next_song
         self.speak("voices/Berhasil menghapus lagu.mp3")
@@ -202,7 +204,7 @@ class Playlist:
     def remove_song(self, song):
         # Menghentikan lagu jika sedang diputar
         if self.monitor_player_status("apasaja"):
-            self.stopping()
+            self.stopping("delete")
         # Menghapus lagu dari daftar putar
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
@@ -220,21 +222,32 @@ class Playlist:
             song.next_song.prev_song = song.prev_song
         self.speak("voices/Berhasil menghapus lagu.mp3")
 
-    def search_song(self, title):
+    def search_song(self, title, arg=None):
         # Mencari lagu dalam daftar putar
         current = self.head
-        while current is not None:
-            # Jika lagu ditemukan
-            if current.title == title:
-                return current
-            current = current.next_song
-        return None
+        if arg is None:
+            while current is not None:
+                # Jika lagu ditemukan
+                if current.title == title:
+                    return current
+                current = current.next_song
+            return None
+        else:
+            founded_items = []
+            no = 1
+            while current is not None:
+                founded_items.append(f"[{no:2}] {current.title}")
+                current = current.next_song
+                no += 1
+            matching_items = [item for item in founded_items if title.lower() in item.lower()]
+            return matching_items
     
     def stopping(self, arg=None):
         # Mematikan lagu yang sedang diputar
         if self.player is not None:
             self.player.stop()
-            self.speak("voices/Berhenti memutar lagu.mp3")
+            if arg != "delete":
+                self.speak("voices/Berhenti memutar lagu.mp3")
             self.player = None
         else:
             if arg is None:
@@ -342,6 +355,7 @@ class Application:
         print("╚" + "═" * center + "╝")
 
     def load_playlist(self):
+        self.clearScreen()
         # Menampilkan daftar lagu
         self.subtitle("Daftar Lagu Tersedia")
         print("------------------------------------------------------------")
@@ -374,8 +388,8 @@ class Application:
         print("Pilih posisi lagu yang ingin ditambahkan ke daftar putar:")
         print("[1] Tambah di awal daftar putar")
         print("[2] Tambah di akhir daftar putar")
-        print("[3] Tambah setelah lagu tertentu")
-        print("[4] Tambah sebelum lagu tertentu")
+        print("[3] Tambah setelah (judul lagu)")
+        print("[4] Tambah sebelum (judul lagu)")
         print("------------------------------------------------------------")
 
         try:
@@ -403,6 +417,8 @@ class Application:
     def delete_playlist(self):
         if Playlist.isEmpty():
             return
+        self.clearScreen()
+        self.subtitle("Hapus Lagu Dari Daftar Putar")
         print("------------------------------------------------------------")
         print("Daftar Putar saat ini: ")
         Playlist.display()
@@ -410,7 +426,7 @@ class Application:
         print("Hapus lagu berdasarkan:")
         print("[1] Hapus lagu di awal daftar putar")
         print("[2] Hapus lagu di akhir daftar putar")
-        print("[3] Hapus lagu tertentu")
+        print("[3] Hapus lagu (dengan judul)")
         print("------------------------------------------------------------")
         try:
             hapus = int(input("Pilih lagu yang ingin dihapus dari daftar putar: "))
@@ -434,6 +450,21 @@ class Application:
                 Playlist.speak("voices/Lagu tidak ditemukan.mp3")
         else:
             Playlist.speak("voices/Input tidak valid.mp3")
+        
+    def pencarian_lagu(self):
+        if Playlist.isEmpty():
+            return
+        judul_lagu = input("Masukkan judul lagu yang akan dicari: ")
+        lagu = Playlist.search_song(judul_lagu, any)
+        if lagu:
+            self.clearScreen()
+            self.subtitle("Hasil Pencarian")
+            Playlist.speak("voices/Lagu ditemukan.mp3")
+            for lagu in lagu:
+                print(lagu)
+            input("\nTekan enter untuk melanjutkan...")
+        else:
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
 
 # Buat objek / instance daftar putar
 Playlist = Playlist()
@@ -475,14 +506,7 @@ while True:
     elif pilihan == "6":
         App.delete_playlist()
     elif pilihan == "7":
-        if Playlist.isEmpty():
-            continue
-        judul_lagu = input("Masukkan judul lagu yang akan dicari: ")
-        lagu = Playlist.search_song(judul_lagu)
-        if lagu:
-            Playlist.speak("voices/Lagu ditemukan.mp3")
-        else:
-            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+        App.pencarian_lagu()
     elif pilihan == "8":
         if Playlist.speaker == voice:
             Playlist.speak("voices/Suara dinonaktifkan.mp3")
