@@ -174,37 +174,35 @@ class Playlist:
         self.speak("voices/Berhasil menambahkan lagu.mp3")
     
     def delete_at_start(self):
+        current = self.head
         # Menghentikan lagu jika sedang diputar
-        if self.monitor_player_status("apasaja"):
-            self.stopping()
-            self.current_song = None
-        # Menghapus lagu dari daftar putar
-        if self.head.next_song is None:
-            self.head = None
-            return
-        self.head = self.head.next_song
-        self.prev_song = None
+        if self.current_song == current:
+            if self.monitor_player_status("apasaja"):
+                self.stopping()
+        self.head = current.next_song
+        self.current_song = self.head
         self.speak("voices/Berhasil menghapus lagu.mp3")
     
     def delete_at_end(self):
-        # Menghentikan lagu jika sedang diputar
-        if self.monitor_player_status("apasaja"):
-            self.stopping()
-            self.current_song = None
-        if self.head.next_song is None:
+        current = self.head
+        if current.next_song is None:
             self.head = None
             return
-        current = self.head
-        while current.next_song is not None:
+        while current is not None:
+            if current.next_song is None:
+                self.tail = current.prev_song
+                self.tail.next_song = None
+                if self.monitor_player_status("apasaja"):
+                    self.stopping()
+                self.current_song = current.prev_song
+                break
             current = current.next_song
-        current.prev_song.next_song = None
         self.speak("voices/Berhasil menghapus lagu.mp3")
 
     def remove_song(self, song):
         # Menghentikan lagu jika sedang diputar
         if self.monitor_player_status("apasaja"):
             self.stopping()
-            self.current_song = None
         # Menghapus lagu dari daftar putar
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
@@ -215,11 +213,9 @@ class Playlist:
             # Jika lagu yang dihapus adalah lagu terakhir
             self.tail = song.prev_song
         if song.prev_song is not None:
-            # Jika lagu yang dihapus bukan lagu pertama
             self.current_song = song.prev_song
             song.prev_song.next_song = song.next_song
         if song.next_song is not None:
-            # Jika lagu yang dihapus bukan lagu terakhir
             self.current_song = song.next_song
             song.next_song.prev_song = song.prev_song
         self.speak("voices/Berhasil menghapus lagu.mp3")
