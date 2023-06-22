@@ -1,8 +1,7 @@
 import os
 import time
 from threading import Thread
-from simpleplayer import PlaySong as voice
-from simpleplayer import PlaySong
+from simpleplayer import PlaySong as voice, PlaySong
 
 lokasi = []
 judul = []
