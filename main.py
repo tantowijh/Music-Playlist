@@ -203,23 +203,34 @@ class Playlist:
         self.speak("voices/Berhasil menghapus lagu.mp3")
 
     def remove_song(self, song):
+        playing = self.current_song
         # Menghentikan lagu jika sedang diputar
-        if self.monitor_player_status("apasaja"):
-            self.stopping("delete")
+        if self.current_song == song:
+            if self.monitor_player_status("apasaja"):
+                self.stopping("delete")
         # Menghapus lagu dari daftar putar
         if song is self.head:
             # Jika lagu yang dihapus adalah lagu pertama
             self.head = song.next_song
-            if self.current_song == song:
-                self.current_song = None
+            if song is playing:
+                self.current_song = self.head
+            self.speak("voices/Berhasil menghapus lagu.mp3")
+            return
         if song is self.tail:
             # Jika lagu yang dihapus adalah lagu terakhir
             self.tail = song.prev_song
+            self.tail.next_song = None
+            if song is playing:
+                self.current_song = song.prev_song
+            self.speak("voices/Berhasil menghapus lagu.mp3")
+            return
         if song.prev_song is not None:
-            self.current_song = song.prev_song
+            if song is playing:
+                self.current_song = playing.prev_song
             song.prev_song.next_song = song.next_song
         if song.next_song is not None:
-            self.current_song = song.next_song
+            if song is playing:
+                self.current_song = playing.next_song
             song.next_song.prev_song = song.prev_song
         self.speak("voices/Berhasil menghapus lagu.mp3")
 
@@ -242,6 +253,16 @@ class Playlist:
                 no += 1
             matching_items = [item for item in founded_items if title.lower() in item.lower()]
             return matching_items
+    
+    def get_song_by_number(self, number):
+        get_song = self.head
+        current_number = 1
+        while get_song is not None:
+            if current_number == number:
+                return get_song
+            get_song = get_song.next_song
+            current_number += 1
+        return None
     
     def stopping(self, arg=None):
         # Mematikan lagu yang sedang diputar
@@ -389,8 +410,8 @@ class Application:
         print("Pilih posisi lagu yang ingin ditambahkan ke daftar putar:")
         print("[1] Tambah di awal daftar putar")
         print("[2] Tambah di akhir daftar putar")
-        print("[3] Tambah setelah (judul lagu)")
-        print("[4] Tambah sebelum (judul lagu)")
+        print("[3] Tambah setelah (nomor urut lagu)")
+        print("[4] Tambah sebelum (nomor urut lagu)")
         print("------------------------------------------------------------")
 
         try:
@@ -407,13 +428,32 @@ class Application:
             Playlist.add_song_in_start(judul[tambah-1], lokasi[tambah-1])
         elif posisi == 2:
             Playlist.add_song_in_end(judul[tambah-1], lokasi[tambah-1])
-        elif posisi == 3:
-            Playlist.add_song_after(judul[tambah-1], lokasi[tambah-1], input("Tambah setelah lagu: "))
-        elif posisi == 4:
-            Playlist.add_song_before(judul[tambah-1], lokasi[tambah-1], input("Tambah sebelum lagu: "))
+        elif posisi == 3 or posisi == 4:
+            lagu = App.urutan_lagu().title
+            if lagu:
+                if posisi == 3:
+                    Playlist.add_song_after(judul[tambah-1], lokasi[tambah-1], lagu)
+                else:
+                    Playlist.add_song_before(judul[tambah-1], lokasi[tambah-1], lagu)
+            else:
+                Playlist.speak("voices/Lagu tidak ditemukan.mp3")
         else:
             Playlist.speak("voices/Input tidak valid.mp3")
             return
+    
+    def urutan_lagu(sel, arg=None):
+        try:
+            if arg is None:
+                nomor = int(input("Masukkan nomor urut lagu: "))
+            if arg == "hapus":
+                nomor = int(input("Masukkan nomor urut lagu yang akan dihapus: "))
+        except ValueError:
+            Playlist.speak("voices/Input tidak valid.mp3")
+            return
+        if nomor not in range(1, len(judul)+1):
+            Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+            return
+        return Playlist.get_song_by_number(nomor)
         
     def delete_playlist(self):
         if Playlist.isEmpty():
@@ -427,7 +467,7 @@ class Application:
         print("Hapus lagu berdasarkan:")
         print("[1] Hapus lagu di awal daftar putar")
         print("[2] Hapus lagu di akhir daftar putar")
-        print("[3] Hapus lagu (dengan judul)")
+        print("[3] Hapus lagu (dengan nomor urut)")
         print("------------------------------------------------------------")
         try:
             hapus = int(input("Pilih lagu yang ingin dihapus dari daftar putar: "))
@@ -443,8 +483,7 @@ class Application:
         elif hapus == 2:
             Playlist.delete_at_end()
         elif hapus == 3:
-            judul_lagu = input("Masukkan judul lagu yang akan dihapus: ")
-            lagu = Playlist.search_song(judul_lagu)
+            lagu = App.urutan_lagu("hapus")
             if lagu:
                 Playlist.remove_song(lagu)
             else:
