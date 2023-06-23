@@ -506,6 +506,14 @@ class Application:
             input("\nTekan enter untuk melanjutkan...")
         else:
             Playlist.speak("voices/Lagu tidak ditemukan.mp3")
+    
+    def mute_unmute(self):
+        if Playlist.speaker == voice:
+            Playlist.speak("voices/mute.mp3", 'mute')
+            Playlist.speaker = lambda text: None
+        else:
+            Playlist.speaker = voice
+            Playlist.speak("voices/Suara diaktifkan.mp3")
 
 # Buat objek / instance daftar putar
 Playlist = Playlist()
@@ -549,12 +557,7 @@ while True:
     elif pilihan == "7":
         App.pencarian_lagu()
     elif pilihan == "8":
-        if Playlist.speaker == voice:
-            Playlist.speak("voices/mute.mp3", 'mute')
-            Playlist.speaker = lambda text: None
-        else:
-            Playlist.speaker = voice
-            Playlist.speak("voices/Suara diaktifkan.mp3")
+        App.mute_unmute()
     elif pilihan == "9":
         path = input("Masukkan path direktori lagu: ")
         Playlist.updatePath(path)
