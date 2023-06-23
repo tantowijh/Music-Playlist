@@ -402,11 +402,13 @@ class Application:
         # Cek apakah lagu sudah ada dalam daftar putar
         if Playlist.song_exist(judul[tambah-1]):
             return
+        App.clearScreen()
         print("------------------------------------------------------------")
         print("Daftar Putar saat ini: ")
         Playlist.display()
         print("------------------------------------------------------------")
-        print("Pilih posisi lagu yang ingin ditambahkan ke daftar putar:")
+        print(f"Judul lagu: \033[1;35m{judul[tambah-1]}\033[0m")
+        print("Pilih posisi lagu untuk ditambahkan ke daftar putar:")
         print("[1] Tambah di awal daftar putar")
         print("[2] Tambah di akhir daftar putar")
         print("[3] Tambah setelah (nomor urut lagu)")
