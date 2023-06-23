@@ -44,7 +44,7 @@ class Playlist:
     def speak(self, voice_in, arg=None):
         # Memulaikan thread untuk memutar suara
         if self.speaker != voice:
-            if arg is None:
+            if arg is None and arg != 'pencarian':
                 print(f"{os.path.basename(os.path.splitext(voice_in)[0])}")
                 time.sleep(1)
             return
@@ -500,7 +500,7 @@ class Application:
         if lagu:
             self.clearScreen()
             self.subtitle("Hasil Pencarian")
-            Playlist.speak("voices/Lagu ditemukan.mp3")
+            Playlist.speak("voices/Lagu ditemukan.mp3", 'pencarian')
             for lagu in lagu:
                 print(lagu)
             input("\nTekan enter untuk melanjutkan...")
