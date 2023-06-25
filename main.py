@@ -55,9 +55,6 @@ class Playlist:
     def stop_speaking(self):
         # Menghentikan thread untuk memutar suara
         if self.speaking_thread is not None and self.speaking_thread.is_alive():
-            self.speaker.keep_speaking = False
-        # Menunggu thread selesai
-        if self.speaking_thread is not None:
             self.speaking_thread.join()
 
     def loadLocalSong(self):
