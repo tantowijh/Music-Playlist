@@ -350,7 +350,7 @@ class Application:
 
     def namaProgram(self):
         # Nama program
-        program_name = "MUSIC PLAYER"
+        program_name = "MUSIC PLAYLIST"
         subtitle = "Double Linked List Program"
         underline = "-" * center
 
